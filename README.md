@@ -17,5 +17,5 @@ int main(int argc, char *argv[]) {
 
 # Dependencies
 
-* whoshuu's cpr library
-* svaarala's duktape library
+* [cpr](https://github.com/whoshuu/cpr)
+* [duktape](https://github.com/svaarala/duktape)
