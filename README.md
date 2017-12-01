@@ -14,3 +14,8 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 ```
+
+# Dependencies
+
+* whoshuu's cpr library
+* svaarala's duktape library
