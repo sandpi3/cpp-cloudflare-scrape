@@ -26,7 +26,13 @@ std::string jsResponse::getNewLoc(std::string url){
 
 cpr::Response jsResponse::get(std::string url, cpr::Header originalHeaders){
     originalHeaders["User-Agent"] = this->userAgent;
-    auto r = cpr::Get(cpr::Url{url}, originalHeaders);
+    cpr::Response r;
+
+    if(this->cookies["__cfduid"] != ""){
+        r = cpr::Get(cpr::Url{url}, originalHeaders, this->cookies);   
+    }else{
+        r = cpr::Get(cpr::Url{url}, originalHeaders);
+    }
 
     if( r.status_code == 503 && r.header["Server"] == "cloudflare-nginx" && r.text.find("jschl_vc") != std::string::npos && r.text.find("jschl_vc") != std::string::npos){
         if(this->setup(r.text)){
@@ -37,9 +43,12 @@ cpr::Response jsResponse::get(std::string url, cpr::Header originalHeaders){
                 {"pass", this->pass},
                 {"jschl_answer", std::to_string(answer)}};
             
-            cpr::Response nr = cpr::Get(cpr::Url{newUrl}, r.cookies, cpr::Header{{"Referer", url}, {"User-Agent", this->userAgent}}, pms);
-
-            return cpr::Get(cpr::Url{url}, nr.cookies, originalHeaders);
+            cpr::Response nr = cpr::Get(cpr::Url{newUrl}, r.cookies, cpr::Header{{"Referer", url}, {"User-Agent", this->userAgent}}, pms);            
+            cpr::Response rnn = cpr::Get(cpr::Url{url}, nr.cookies, originalHeaders);
+            this->cookies = rnn.cookies;
+            this->cookies["__cfduid"] = r.cookies["__cfduid"];
+            this->cookies["cf_clearance"] = nr.cookies["cf_clearance"];
+            return rnn;
         }
     }
 
