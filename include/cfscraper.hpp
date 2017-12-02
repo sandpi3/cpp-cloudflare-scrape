@@ -18,7 +18,7 @@ private:
     std::string getNewLoc(std::string url);  
     int answer;
     int domainLength;
-    cpr::Header headers;
+    cpr::Cookies cookies;
     int getAnswer();    
     std::string userAgent;
     std::string question;
