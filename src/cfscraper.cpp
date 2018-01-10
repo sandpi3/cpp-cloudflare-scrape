@@ -34,7 +34,7 @@ cpr::Response jsResponse::get(std::string url, cpr::Header originalHeaders){
         r = cpr::Get(cpr::Url{url}, originalHeaders);
     }
 
-    if( r.status_code == 503 && r.header["Server"] == "cloudflare-nginx" && r.text.find("jschl_vc") != std::string::npos && r.text.find("jschl_vc") != std::string::npos){
+    if( r.status_code == 503 && (r.header["Server"] == "cloudflare-nginx" || r.header["Server"] == "cloudflare") && r.text.find("jschl_vc") != std::string::npos && r.text.find("jschl_vc") != std::string::npos){
         if(this->setup(r.text)){
             std::string newUrl = this->getNewLoc(url);
             int answer = this->domainLength + this->answer;
